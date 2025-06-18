@@ -2,7 +2,8 @@ import express from 'express';
 import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
 
-import { errorHandler, rateLimiter } from '@liranmazor/ticketing-common';
+import { currentUser, errorHandler, rateLimiter } from '@liranmazor/ticketing-common';
+import { createAccommodationRouter } from './routes/create';
 
 const app = express();
 app.set('trust proxy', true);
@@ -19,6 +20,10 @@ app.use(
      maxAge: 24 * 60 * 60 * 1000
    })
  );
+
+app.use(currentUser);
+
+app.use(createAccommodationRouter);
 
 app.use(errorHandler as any);
 

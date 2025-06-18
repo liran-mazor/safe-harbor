@@ -1,6 +1,6 @@
 import { app } from './app';
+import { DatabaseManager } from './db-manager';
 import { natsClient } from './nats-client';
-import { Client } from 'pg';
 
 const start = async () => {
   if (!process.env.JWT_KEY) {
@@ -23,6 +23,10 @@ const start = async () => {
   }
 
   try {
+
+    await DatabaseManager.initialize();
+    console.log('Connected to PostgreSQL');
+    
     await natsClient.connect(
       process.env.NATS_CLUSTER_ID,
       process.env.NATS_CLIENT_ID,
@@ -37,19 +41,14 @@ const start = async () => {
     process.on('SIGINT', () => natsClient.client.close());
     process.on('SIGTERM', () => natsClient.client.close());
     
-    const pgClient = new Client({
-      connectionString: process.env.DATABASE_URL
+    app.listen(3000, () => {
+      console.log('Listening on port 3000');
     });
-    
-    await pgClient.connect();
-    console.log('Connected to PostgreSQL');
+
   } catch (err) {
     console.error(err);
   }
 
-  app.listen(3000, () => {
-    console.log('Listening on port 3000');
-  });
 };
 
 start();

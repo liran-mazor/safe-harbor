@@ -1,0 +1,49 @@
+# PostgreSQL Database Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: accommodations-postgres-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: accommodations-postgres
+  template:
+    metadata:
+      labels:
+        app: accommodations-postgres
+    spec:
+      containers:
+        - name: accommodations-postgres
+          image: postgres:15
+          env:
+            - name: POSTGRES_DB
+              value: 'accommodations'
+            - name: POSTGRES_USER
+              value: 'safeharbor'
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: postgres-storage
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: accommodations-postgres-srv
+spec:
+  selector:
+    app: accommodations-postgres
+  ports:
+    - name: db
+      protocol: TCP
+      port: 5432
+      targetPort: 5432

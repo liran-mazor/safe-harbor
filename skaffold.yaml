@@ -2,7 +2,7 @@ apiVersion: skaffold/v4beta3
 kind: Config
 manifests:
   rawYaml:
-    - ./infra/k8s/*
+    - ./infra/*
 build:
   local:
     push: false
@@ -15,7 +15,7 @@ build:
         manual:
           - src: 'src/**/*.ts'
             dest: .
-    - image: liran1789/client
+    - image: liran1789/client-safe-harbor
       context: client
       docker:
         dockerfile: Dockerfile
@@ -23,28 +23,11 @@ build:
         manual:
           - src: '**/*.js'
             dest: .
-    - image: liran1789/worksheets
-      context: worksheets
+    - image: liran1789/accommodations
+      context: accommodations
       docker:
         dockerfile: Dockerfile
       sync:
         manual:
-          - src: 'src/**/*.ts'
+          - src: '**/*.js'
             dest: .
-    - image: liran1789/ai-processor
-      context: ai-processor
-      docker:
-        dockerfile: Dockerfile
-      sync:
-        manual:
-          - src: 'src/**/*.ts'
-            dest: .
-    - image: liran1789/quizzes
-      context: quizzes
-      docker:
-        dockerfile: Dockerfile
-      sync:
-        manual:
-          - src: 'src/**/*.ts'
-            dest: .
-          

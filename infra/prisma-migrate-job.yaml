@@ -1,0 +1,59 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: prisma-migrate-job
+  labels:
+    app: prisma-migrate
+spec:
+  template:
+    spec:
+      containers:
+      - name: prisma-migrate
+        image: liran1789/transactions  
+        command: 
+          - /bin/sh
+          - -c
+          - |
+            echo "🔄 Running Prisma migrations..."
+            npx prisma migrate dev --name auto_migration
+            echo "✅ Migrations completed!"
+        env:
+        - name: DATABASE_URL
+          value: 'postgresql://bankuser:asdf@transactions-postgres-srv:5432/transactions'
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_PASSWORD
+        - name: CI
+          value: "true"
+        - name: SKIP_SEED
+          value: "true"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "200m"
+      restartPolicy: OnFailure
+      initContainers:
+      - name: wait-for-postgres
+        image: postgres:15
+        command: 
+          - /bin/sh
+          - -c
+          - |
+            echo "⏳ Waiting for PostgreSQL to be ready..."
+            until pg_isready -h transactions-postgres-srv -p 5432 -U bankuser; do
+              echo "PostgreSQL is unavailable - sleeping"
+              sleep 2
+            done
+            echo "✅ PostgreSQL is ready!"
+        env:
+        - name: PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_PASSWORD
+  backoffLimit: 3

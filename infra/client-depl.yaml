@@ -14,10 +14,7 @@ spec:
     spec:
       containers:
         - name: client
-          image: liran1789/client-safe-harbor
-          env:
-            - name: STRIPE_PK
-              value: pk_test_51RSHfzC6sBAnOBgKbgjXIGFKXLQgtjqXnjtdVJxnJCzXwyUZ25eiFRq3ENDaXZcsk5x4s2x1782i1njUEngOzMvC00XgmbnO3R
+          image: liran1789/client-bank
 ---
 apiVersion: v1
 kind: Service

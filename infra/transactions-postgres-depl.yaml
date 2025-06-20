@@ -2,25 +2,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: accommodations-postgres-depl
+  name: transactions-postgres-depl
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: accommodations-postgres
+      app: transactions-postgres
   template:
     metadata:
       labels:
-        app: accommodations-postgres
+        app: transactions-postgres
     spec:
       containers:
-        - name: accommodations-postgres
+        - name: transactions-postgres
           image: postgres:15
           env:
             - name: POSTGRES_DB
-              value: 'accommodations'
+              value: 'transactions'
             - name: POSTGRES_USER
-              value: 'safeharbor'
+              value: 'bankuser'
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -38,10 +38,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: accommodations-postgres-srv
+  name: transactions-postgres-srv
 spec:
   selector:
-    app: accommodations-postgres
+    app: transactions-postgres
   ports:
     - name: db
       protocol: TCP

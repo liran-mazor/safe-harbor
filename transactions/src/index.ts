@@ -1,6 +1,6 @@
 import { app } from './app';
-import { DatabaseManager } from './db-manager';
-import { natsClient } from './nats-client';
+import { natsClient } from './lib/nats-client';
+import { prisma } from './lib/prisma-client';
 
 const start = async () => {
   if (!process.env.JWT_KEY) {
@@ -24,7 +24,7 @@ const start = async () => {
 
   try {
 
-    await DatabaseManager.initialize();
+    await prisma.$connect();
     console.log('Connected to PostgreSQL');
     
     await natsClient.connect(
@@ -41,13 +41,13 @@ const start = async () => {
     process.on('SIGINT', () => natsClient.client.close());
     process.on('SIGTERM', () => natsClient.client.close());
     
-    app.listen(3000, () => {
-      console.log('Listening on port 3000');
-    });
 
   } catch (err) {
     console.error(err);
   }
+  app.listen(3000, () => {
+    console.log('Listening on port 3000');
+  });
 
 };
 

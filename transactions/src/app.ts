@@ -3,7 +3,7 @@ import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
 
 import { currentUser, errorHandler, rateLimiter } from '@liranmazor/ticketing-common';
-import { createAccommodationRouter } from './routes/create';
+import { healthRouter } from './routes/health';
 
 const app = express();
 app.set('trust proxy', true);
@@ -23,7 +23,7 @@ app.use(
 
 app.use(currentUser);
 
-app.use(createAccommodationRouter);
+app.use(healthRouter);
 
 app.use(errorHandler as any);
 

@@ -1,0 +1,28 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Accommodation {
+  id           String   @id @default(uuid())
+  hostId       String   @map("host_id")
+  maxGuests    Int      @map("max_guests")
+  location     Json
+  accessibility Boolean @default(false)
+  petsAllowed  Boolean  @default(false) @map("pets_allowed")
+  isAvailable  Boolean  @default(true) @map("is_available")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("accommodations")
+  @@index([hostId])
+  @@index([isAvailable])
+  @@index([createdAt(sort: Desc)])
+}

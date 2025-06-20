@@ -15,7 +15,7 @@ build:
         manual:
           - src: 'src/**/*.ts'
             dest: .
-    - image: liran1789/client-safe-harbor
+    - image: liran1789/client-bank
       context: client
       docker:
         dockerfile: Dockerfile
@@ -23,8 +23,8 @@ build:
         manual:
           - src: '**/*.js'
             dest: .
-    - image: liran1789/accommodations
-      context: accommodations
+    - image: liran1789/transactions
+      context: transactions
       docker:
         dockerfile: Dockerfile
       sync:
